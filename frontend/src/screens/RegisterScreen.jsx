@@ -1,9 +1,11 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
 // import {useDispatch} from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import { useRegisterUserMutation } from "../slices/userApiSlice";
+import { toast } from "react-toastify";
 
 function RegisterScreen() {
   const [name, setName] = useState("");
@@ -11,11 +13,26 @@ function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [registerUser] = useRegisterUserMutation();
+
   // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    try {
+      if (password !== confirmPassword) {
+        toast.error("password is not matching");
+        return;
+      }
+      await registerUser({ name, email, password }).unwrap();
+
+      toast.success("registered successfully");
+
+      navigate("/login");
+    } catch (error) {
+      toast.error(error?.message || error?.data?.message);
+    }
   };
 
   return (
