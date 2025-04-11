@@ -4,7 +4,7 @@ const productApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
 
         getProducts: builder.query({
-            query: ({ pageNumber, keyword }) => ({
+            query: ({ pageNumber, keyword } = {}) => ({
                 url: '/api/products',
                 params: { pageNumber, keyword }
             }),
@@ -24,5 +24,6 @@ const productApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
+    useGetProductsQuery,
     useCreateProductMutation
 } = productApiSlice

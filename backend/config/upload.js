@@ -5,9 +5,9 @@ import multer from 'multer'
 
 
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: "du25wfdfx",
+    api_key: '799793882337387',
+    api_secret: "QoJyv84AhZ9Pwur_J_d6xxTbx6o"
 })
 
 

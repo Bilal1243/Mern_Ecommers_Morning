@@ -2,11 +2,18 @@ import React from "react";
 import { Row, Col, Button, Table } from "react-bootstrap";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import Loader from '../../components/Loader'
+import { Link, useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import { useGetProductsQuery } from "../../slices/productApiSlice";
 
 function ProductListScreen() {
+  const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+
+  const navigate = useNavigate();
+
+  const deleteHandler = async (id) => {};
+
   return (
     <>
       <Row className="align-items-center">
@@ -14,7 +21,10 @@ function ProductListScreen() {
           <h1>Products</h1>
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm m-3">
+          <Button
+            className="btn-sm m-3"
+            onClick={() => navigate("/admin/addproduct")}
+          >
             <FaPlus /> Create Product
           </Button>
         </Col>
@@ -33,11 +43,11 @@ function ProductListScreen() {
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
-                <th></th>
+                <th>actions</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {products?.products.map((product) => (
                 <tr key={product._id}>
                   <td>{product._id}</td>
                   <td>{product.name}</td>
