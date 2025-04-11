@@ -18,6 +18,14 @@ const productApiSlice = apiSlice.injectEndpoints({
                 body: data
             }),
             invalidatesTags: ['Products']
+        }),
+
+        deleteProduct: builder.mutation({
+            query: (productId) => ({
+                url: `/api/products/${productId}`,
+                method: 'DELETE'
+            }),
+            providesTags: ["Product"]
         })
 
     })
@@ -25,5 +33,6 @@ const productApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useGetProductsQuery,
-    useCreateProductMutation
+    useCreateProductMutation,
+    useDeleteProductMutation
 } = productApiSlice

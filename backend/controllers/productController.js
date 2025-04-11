@@ -26,7 +26,7 @@ const getProducts = asyncHandler(async (req, res) => {
         .limit(pageSize)                            // Limit the number of products per page
         .skip(pageSize * (page - 1));               // Skip products from previous pages
 
-        console.log(products)
+    console.log(products)
 
     // Send the result back as JSON
     res.json({
@@ -40,6 +40,16 @@ const getProducts = asyncHandler(async (req, res) => {
 
 
 const getProductById = asyncHandler(async (req, res) => {
+
+    let product = await Products.findById(req.params.id)
+
+    if (product) {
+        return res.json(product)
+    }
+    else {
+        res.status(404)
+        throw new Error('Product Not Found')
+    }
 
 })
 
@@ -81,6 +91,16 @@ const updateProduct = asyncHandler(async (req, res) => {
 })
 
 const deleteProduct = asyncHandler(async (req, res) => {
+
+    let product = await Products.findById(req.params.id)
+
+    if (product) {
+        await Products.deleteOne({ _id: product._id })
+        res.json({ message: 'product removed' })
+    } else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
 
 })
 

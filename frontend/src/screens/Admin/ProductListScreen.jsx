@@ -5,14 +5,27 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import { useGetProductsQuery } from "../../slices/productApiSlice";
+import {
+  useGetProductsQuery,
+  useDeleteProductMutation,
+} from "../../slices/productApiSlice";
 
 function ProductListScreen() {
   const { data: products, isLoading, error, refetch } = useGetProductsQuery();
 
+  const [deleteProduct] = useDeleteProductMutation();
+
   const navigate = useNavigate();
 
-  const deleteHandler = async (id) => {};
+  const deleteHandler = async (productId) => {
+    try {
+      await deleteProduct(productId).unwrap();
+      toast.success("Deleted");
+      refetch();
+    } catch (error) {
+      toast.error(error?.message || error?.data?.message);
+    }
+  };
 
   return (
     <>
