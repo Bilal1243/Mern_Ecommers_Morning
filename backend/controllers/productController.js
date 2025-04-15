@@ -6,7 +6,7 @@ import asyncHandler from '../middlewares/asyncHandler.js'
 const getProducts = asyncHandler(async (req, res) => {
 
     // Set the number of products to display per page (pagination size)
-    const pageSize = 5;
+    const pageSize = 4;
 
     // Get the page number from the query string (e.g., ?pageNumber=2), default is 1
     const page = Number(req.query.pageNumber) || 1;
@@ -25,8 +25,6 @@ const getProducts = asyncHandler(async (req, res) => {
     const products = await Products.find({ ...keywordCondition })
         .limit(pageSize)                            // Limit the number of products per page
         .skip(pageSize * (page - 1));               // Skip products from previous pages
-
-    console.log(products)
 
     // Send the result back as JSON
     res.json({
@@ -60,7 +58,6 @@ const createProduct = asyncHandler(async (req, res) => {
     // Destructure the required fields from the request body
     const { name, brand, category, description, price, countInStock } = req.body;
 
-    console.log(req.body)
 
     // Check if a file (image) was uploaded, and get its path
     // If no image was uploaded, image will be null
@@ -105,6 +102,41 @@ const deleteProduct = asyncHandler(async (req, res) => {
 })
 
 const createProductReview = asyncHandler(async (req, res) => {
+
+    const { rating, comment } = req.body
+
+    const product = await Products.findById(req.params.id)
+
+    if (product) {
+
+        const alreadyReviewed = product.reviews.find((item) => item.user.toString() == req.user._id.toString())
+
+        if (alreadyReviewed) {
+            res.status(404)
+            throw new Error('Product Already Reviewed')
+        }
+
+        const review = {
+            name: req.user.name,
+            rating,
+            comment,
+            user: req.user._id
+        }
+
+        product.reviews.push(review)
+        product.numReviews = product.reviews.length
+        product.rating =
+            product.reviews.reduce((acc, item) => item.rating, 0) /
+            product.reviews.length
+
+        const updateProduct = await product.save()
+
+        res.status(201).json(updateProduct)
+
+    } else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
 
 })
 

@@ -10,6 +10,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProductListScreen from "./screens/Admin/ProductListScreen";
 import ProductAddScreen from "./screens/Admin/ProductAddScreen";
+import ProductScreen from "./screens/ProductScreen";
 
 function App() {
   return (
@@ -21,10 +22,15 @@ function App() {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/" element={<HomeScreen />} />
+            <Route path="/page/:pageNumber" element={<HomeScreen />} />
+            <Route
+              path="/search/:keyword/page/:pageNumber"
+              element={<HomeScreen />}
+            />
+            <Route path="/product/:id" element={<ProductScreen />} />
 
             <Route path="/admin/productlist" element={<ProductListScreen />} />
             <Route path="/admin/addproduct" element={<ProductAddScreen />} />
-            
           </Routes>
         </Container>
       </main>
