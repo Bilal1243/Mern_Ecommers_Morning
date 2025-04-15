@@ -45,7 +45,7 @@ function ProductScreen() {
         rating,
         comment,
       }).unwrap();
-      refetch()
+      refetch();
       toast.success("Review Added");
     } catch (error) {
       toast.error(error?.data?.message || error?.message);
