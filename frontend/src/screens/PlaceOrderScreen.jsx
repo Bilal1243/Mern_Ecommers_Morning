@@ -1,8 +1,19 @@
 import React from "react";
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
-import Message from '../components/Message'
+import Message from "../components/Message";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function PlaceOrderScreen() {
+  
+  const cart = useSelector((state) => state.cart);
+
+  let isLoading = false;
+  let error;
+
+  const placeOrderHandler = async () => {};
+
   return (
     <>
       <CheckoutSteps step1 step2 step3 step4 />

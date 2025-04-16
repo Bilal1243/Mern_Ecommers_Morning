@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CheckoutSteps from "../components/CheckoutSteps";
 import FormContainer from "../components/FormContainer";
 import { Form, Col, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { savePaymentMethod } from "../slices/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 function PaymentScreen() {
+  const { shippingAddress } = useSelector((state) => state.cart);
+
   const [paymentMethod, setPaymentMethod] = useState("Razorpay");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    dispatch(savePaymentMethod(paymentMethod));
+    navigate("/placeorder");
   };
+
+  useEffect(() => {
+    if (!shippingAddress) {
+      navigate("/shipping");
+    }
+  }, []);
 
   return (
     <>

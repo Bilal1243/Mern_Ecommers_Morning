@@ -1,23 +1,51 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
 import { Form, Button } from "react-bootstrap";
 import CheckoutSteps from "../components/CheckoutSteps";
+import { saveShippingAddress } from "../slices/cartSlice";
+import { toast } from "react-toastify";
 
 function ShippingScreen() {
-  const [address, setAddress] = useState();
-  const [city, setCity] = useState();
-  const [postalCode, setPostalCode] = useState();
-  const [country, setCountry] = useState();
+  const { shippingAddress } = useSelector((state) => state.cart);
+
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitHandler = (e) => {
     e.preventDefault();
+
+    // Basic validation
+    if (!address || !city || !postalCode || !country) {
+      toast.error("Please fill in all the fields");
+      return;
+    }
+
+    // Optional: add more specific validation
+    if (postalCode.length < 4 || postalCode.length > 10) {
+      toast.error("Please enter a valid postal code");
+      return;
+    }
+
+    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    navigate("/payment");
   };
-  
+
+  useEffect(() => {
+    if (shippingAddress) {
+      setAddress(shippingAddress?.address);
+      setCity(shippingAddress?.city);
+      setPostalCode(shippingAddress?.postalCode);
+      setCountry(shippingAddress?.country);
+    }
+  }, [shippingAddress]);
+
   return (
     <>
       <FormContainer>

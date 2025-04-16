@@ -1,10 +1,33 @@
 import React from "react";
-import { Row, Col, ListGroup, Button, Card } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  ListGroup,
+  Button,
+  Card,
+  Image,
+  Form,
+} from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart, removeFromCart } from "../slices/cartSlice";
 
 function CartScreen() {
+  const { cartItems } = useSelector((state) => state.cart);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const addToCartHandler = (product, qty) => {
+    dispatch(addToCart({ ...product, qty }));
+  };
+
+  const removeCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
+
   return (
     <>
       <Row>
@@ -25,10 +48,33 @@ function CartScreen() {
                     <Col md={3}>
                       <Link to={`/product/${item._id}`}>{item.name}</Link>
                     </Col>
+
+                    <Col>
+                      <Form.Control
+                        as="select"
+                        value={item.qty}
+                        onChange={(e) =>
+                          addToCartHandler(item, Number(e.target.value))
+                        }
+                      >
+                        {[...Array(item.countInStock).keys()].map((x) => {
+                          return (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          );
+                        })}
+                      </Form.Control>
+                    </Col>
+
                     <Col md={2}>${item.price}</Col>
 
                     <Col md={2}>
-                      <Button type="button" variant="light">
+                      <Button
+                        type="button"
+                        variant="light"
+                        onClick={() => removeCartHandler(item._id)}
+                      >
                         <FaTrash />
                       </Button>
                     </Col>
@@ -43,8 +89,9 @@ function CartScreen() {
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h2>
-                  Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}
-                  ) items
+                  Subtotal (
+                  {cartItems.reduce((acc, item) => acc + Number(item.qty), 0)})
+                  items
                 </h2>
                 $
                 {cartItems
@@ -56,6 +103,7 @@ function CartScreen() {
                   type="button"
                   className="btn-block"
                   disabled={cartItems.length === 0}
+                  onClick={() => navigate("/shipping")}
                 >
                   Proceed To Checkout
                 </Button>
