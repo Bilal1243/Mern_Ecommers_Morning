@@ -2,14 +2,25 @@ import React from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useLogoutUserMutation } from "../slices/userApiSlice";
+import { logout } from "../slices/authSlice";
+import { toast } from "react-toastify";
 
 function Header() {
   const { userData } = useSelector((state) => state.auth);
 
-  const navigate = useNavigate();
+  const [logoutApiCall] = useLogoutUserMutation();
 
-  const logoutHandler = async () => {};
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logoutHandler = async () => {
+    await logoutApiCall().unwrap();
+    dispatch(logout());
+    toast.success("logout success");
+    navigate("/");
+  };
 
   return (
     <>
