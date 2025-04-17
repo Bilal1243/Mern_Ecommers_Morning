@@ -5,6 +5,7 @@ import cors from 'cors'
 import connectDb from './config/db.js'
 import userRoute from './routes/userRoutes.js'
 import productRoute from './routes/productRoutes.js'
+import orderRoute from './routes/orderRoutes.js'
 import { notFound, errorHandler } from './middlewares/errorMiddlewares.js'
 
 dotenv.config()
@@ -22,8 +23,9 @@ app.use(cors())
 let port = process.env.PORT
 
 
-app.use('/api/user' , userRoute)
-app.use('/api/products' , productRoute)
+app.use('/api/user', userRoute)
+app.use('/api/products', productRoute)
+app.use('/api/orders', orderRoute)
 
 
 app.use(notFound)
