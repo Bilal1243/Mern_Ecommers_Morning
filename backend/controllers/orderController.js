@@ -53,17 +53,14 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
 // get all orders // for admin
 const getOrders = asyncHandler(async (req, res) => {
-    const orders = await Orders.find().populate("users", "name email")
+    const orders = await Orders.find().populate("user", "name email")
     res.json(orders)
 })
 
 
 const getOrderById = asyncHandler(async (req, res) => {
 
-    const order = await Orders.findById(req.params.id).populate(
-        "users",
-        "name email"
-    )
+    const order = await Orders.findById(req.params.id).populate("user", "name email")
 
     if (order) {
         res.json(order)

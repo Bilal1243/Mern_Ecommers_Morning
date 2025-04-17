@@ -1,10 +1,15 @@
 import React from "react";
 import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { data, Link, useParams } from "react-router-dom";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import { useGetOrderByIdQuery } from "../slices/orderApiSlice";
 
 function OrderScreen() {
+  const { id } = useParams();
+
+  const { data: order, isLoading, error } = useGetOrderByIdQuery(id);
+
   return (
     <>
       {isLoading ? (

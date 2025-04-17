@@ -1,18 +1,71 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import Message from "../components/Message";
 import CheckoutSteps from "../components/CheckoutSteps";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { clearCartItems } from "../slices/cartSlice";
+import {
+  useCreateOrderMutation,
+  usePayOrderMutation,
+} from "../slices/orderApiSlice";
 
 function PlaceOrderScreen() {
-  
   const cart = useSelector((state) => state.cart);
 
-  let isLoading = false;
-  let error;
+  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
+  const [payOrder] = usePayOrderMutation();
 
-  const placeOrderHandler = async () => {};
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const placeOrderHandler = async () => {
+    var options = {
+      key: "rzp_test_x6b41FJRXFLvmM",
+      key_secret: "98Y7mFd5GcpuJPIkjB0DaqIh",
+      amount: parseInt(cart.totalPrice * 100),
+      currency: "INR",
+      name: "MUHAMMAD BILAL", // your business name
+      description: "Ecommers Transaction",
+      handler: async function (response) {
+        const pay = response.razorpay_payment_id;
+        try {
+          const res = await createOrder({
+            cartItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            paymentResult: pay,
+            itemsPrice: cart.itemsPrice,
+            taxPrice: cart.taxPrice,
+            shippingPrice: cart.shippingPrice,
+            totalPrice: cart.totalPrice,
+          }).unwrap();
+
+          dispatch(clearCartItems());
+
+          await payOrder(res._id);
+
+          navigate(`/order/${res._id}`);
+        } catch (error) {
+          console.log(error?.message || error?.data?.message);
+        }
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    var pay = new window.Razorpay(options);
+    pay.open();
+  };
+
+  useEffect(() => {
+    if (!cart.shippingAddress) {
+      navigate("/shipping");
+    } else if (!cart.paymentMethod) {
+      navigate("/payment");
+    }
+  }, [cart.shippingAddress, cart.paymentMethod, navigate]);
 
   return (
     <>
@@ -52,9 +105,7 @@ function PlaceOrderScreen() {
                           />
                         </Col>
                         <Col>
-                          <Link to={`/product/${item.product}`}>
-                            {item.name}
-                          </Link>
+                          <Link to={`/product/${item._id}`}>{item.name}</Link>
                         </Col>
                         <Col md={4}>
                           {item.qty} x ${item.price} = ${item.qty * item.price}
