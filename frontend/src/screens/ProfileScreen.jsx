@@ -1,18 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Col, Row, Button, Table } from "react-bootstrap";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { FaTimes } from "react-icons/fa";
+import { useGetMyOrdersQuery } from "../slices/orderApiSlice";
+import { useUpdateUserProfileMutation } from "../slices/userApiSlice";
+import { setCredentails } from "../slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function ProfileScreen() {
+  const { userData } = useSelector((state) => state.auth);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const { data: orders, isLoading, error } = useGetMyOrdersQuery();
+  const [updateUser, { isLoading: loadingUpdateProfile }] =
+    useUpdateUserProfileMutation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const submitHandler = async (e) => {
     e.preventDefault();
+    try {
+      if (password !== confirmPassword) {
+        toast.error("password is not matching");
+        return;
+      }
+      const res = await updateUser({ name, email, password }).unwrap();
+      dispatch(setCredentails(res));
+      toast.success("updated");
+    } catch (error) {
+      toast.error(error?.message || error?.data?.message);
+    }
   };
+
+  useEffect(() => {
+    if (userData) {
+      setName(userData.name);
+      setEmail(userData.email);
+    }
+  }, [userData]);
 
   return (
     <>
@@ -102,7 +135,11 @@ function ProfileScreen() {
                       )}
                     </td>
                     <td>
-                      <Button className="btn-sm" variant="light">
+                      <Button
+                        className="btn-sm"
+                        variant="light"
+                        onClick={() => navigate(`/order/${order._id}`)}
+                      >
                         Details
                       </Button>
                     </td>

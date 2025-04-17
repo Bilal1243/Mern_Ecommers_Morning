@@ -65,6 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 
+// for updating profile
 const updateUserProfile = asyncHandler(async (req, res) => {
 
     const { name, email, password } = req.body

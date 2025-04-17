@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Container, Navbar, Nav, NavDropdown, Badge } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 function Header() {
   const { userData } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.cart);
 
   const [logoutApiCall] = useLogoutUserMutation();
 
@@ -35,6 +36,14 @@ function Header() {
               <Nav className="ms-auto">
                 <Nav.Link as={Link} to={"/cart"}>
                   <FaShoppingCart /> Cart
+                  {cartItems.length > 0 && (
+                    <Badge pill bg="success" style={{ marginLeft: "5px" }}>
+                      {cartItems.reduce(
+                        (acc, item) => acc + Number(item.qty),
+                        0
+                      )}
+                    </Badge>
+                  )}
                 </Nav.Link>
 
                 {userData ? (
