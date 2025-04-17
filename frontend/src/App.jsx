@@ -17,6 +17,7 @@ import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import UserListScreen from "./screens/Admin/UserListScreen";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
 
             <Route path="/admin/productlist" element={<ProductListScreen />} />
             <Route path="/admin/addproduct" element={<ProductAddScreen />} />
+            <Route path="/admin/userlist" element={<UserListScreen />} />
           </Routes>
         </Container>
       </main>
