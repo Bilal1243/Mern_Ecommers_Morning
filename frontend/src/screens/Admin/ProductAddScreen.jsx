@@ -126,7 +126,7 @@ function ProductAddScreen() {
               variant="primary"
               style={{ marginTop: "1rem" }}
             >
-              Update
+              Add
             </Button>
           </Form>
         )}

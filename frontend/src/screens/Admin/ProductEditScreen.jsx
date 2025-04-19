@@ -27,7 +27,8 @@ function ProductEditScreen() {
     error,
     refetch,
   } = useGetProductByIdQuery(productId);
-  const [updateProduct] = useUpdateProductMutation();
+  const [updateProduct, { isLoading: updateloading }] =
+    useUpdateProductMutation();
 
   const navigate = useNavigate();
 
@@ -145,7 +146,7 @@ function ProductEditScreen() {
               variant="primary"
               style={{ marginTop: "1rem" }}
             >
-              Update
+              {updateloading ? "updating...." : "Update"}
             </Button>
           </Form>
         )}
