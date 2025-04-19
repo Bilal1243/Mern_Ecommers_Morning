@@ -11,17 +11,29 @@ import {
 import { toast } from "react-toastify";
 
 function UserEditScreen() {
-  const { id } = useParams();
+  const { id: userId } = useParams();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const { data: user, isLoading, error } = useGetUserDetailsQuery(id);
+  const {
+    data: user,
+    isLoading,
+    error,
+    refetch,
+  } = useGetUserDetailsQuery(userId);
+  const [updateUser] = useUpdateUserMutation();
+
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      await updateUser({ name, email, isAdmin, userId }).unwrap();
+      toast.success("user updated");
+      refetch();
+      navigate("/admin/userlist");
     } catch (error) {
       toast.error(error?.data?.message || error?.message);
     }
