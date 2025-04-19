@@ -6,12 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import {
-  useGetProductsQuery,
+  useGetAllProductsQuery,
   useDeleteProductMutation,
 } from "../../slices/productApiSlice";
 
 function ProductListScreen() {
-  const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+  const { data: products, isLoading, error, refetch } = useGetAllProductsQuery();
 
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -60,7 +60,7 @@ function ProductListScreen() {
               </tr>
             </thead>
             <tbody>
-              {products?.products.map((product) => (
+              {products?.map((product) => (
                 <tr key={product._id}>
                   <td>{product._id}</td>
                   <td>{product.name}</td>

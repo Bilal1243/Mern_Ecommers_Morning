@@ -1,5 +1,5 @@
 import express from 'express'
-import { getProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview } from '../controllers/productController.js'
+import { getProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getAllProducts } from '../controllers/productController.js'
 import { protect, admin } from '../middlewares/authMiddlewares.js'
 import { productParser } from '../config/upload.js'
 const productRoute = express.Router()
@@ -9,6 +9,8 @@ productRoute
     .route('/')
     .get(getProducts)
     .post(protect, admin, productParser.single('image'), createProduct)
+
+productRoute.route('/getAllProducts').get(protect, admin, getAllProducts)
 
 productRoute
     .route('/:id')

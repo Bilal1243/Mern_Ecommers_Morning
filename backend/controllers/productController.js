@@ -102,7 +102,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
         res.json(updatedProduct)
 
-    }else{
+    } else {
         res.status(404)
         throw new Error('Product not found')
     }
@@ -163,11 +163,18 @@ const createProductReview = asyncHandler(async (req, res) => {
 })
 
 
+const getAllProducts = asyncHandler(async (req, res) => {
+    const products = await Products.find()
+    res.json(products)
+})
+
+
 export {
     getProducts,
     getProductById,
     createProduct,
     updateProduct,
     deleteProduct,
-    createProductReview
+    createProductReview,
+    getAllProducts
 }
