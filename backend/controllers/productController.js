@@ -85,6 +85,28 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
 
+    let { name, price, category, countInStock, brand, description } = req.body
+
+    let product = await Products.findOne({ _id: req.params.id })
+
+    if (product) {
+        product.name = name || product.name
+        product.price = price || product.price
+        product.brand = brand || product.brand
+        product.category = category || product.category
+        product.countInStock = countInStock || product.countInStock
+        product.description = description || product.description
+        product.image = req.file ? req.file.path : product.image
+
+        const updatedProduct = await product.save()
+
+        res.json(updatedProduct)
+
+    }else{
+        res.status(404)
+        throw new Error('Product not found')
+    }
+
 })
 
 const deleteProduct = asyncHandler(async (req, res) => {
