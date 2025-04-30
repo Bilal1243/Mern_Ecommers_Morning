@@ -21,11 +21,11 @@ function PlaceOrderScreen() {
 
   const placeOrderHandler = async () => {
     var options = {
-      key: "rzp_test_x6b41FJRXFLvmM",
-      key_secret: "98Y7mFd5GcpuJPIkjB0DaqIh",
+      key: "your_api_key",
+      key_secret: "api_secret",
       amount: parseInt(cart.totalPrice * 100),
       currency: "INR",
-      name: "MUHAMMAD BILAL", // your business name
+      name: "business name", // your business name
       description: "Ecommers Transaction",
       handler: async function (response) {
         const pay = response.razorpay_payment_id;
